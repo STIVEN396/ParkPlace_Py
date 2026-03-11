@@ -13,3 +13,7 @@ db.sqlite3
 
 # archivos del sistema
 .DS_Store
+.history/
+venv/
+__pycache__/
+db.sqlite3

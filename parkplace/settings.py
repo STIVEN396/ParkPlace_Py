@@ -108,5 +108,5 @@ STATIC_URL = 'static/'
 # LOGIN CONFIGURATION
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
