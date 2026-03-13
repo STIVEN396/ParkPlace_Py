@@ -21,7 +21,7 @@ def registrar_vehiculo(request):
 
         return redirect('registrar')
 
-    return render(request, 'registrar.html')
+    return render(request, 'gestion/registrar.html')
 
 @login_required
 def salida(request):
@@ -63,7 +63,7 @@ def salida(request):
         except Ingreso.DoesNotExist:
             pass
 
-    return render(request, 'salida.html', {
+    return render(request, 'gestion/salida.html', {
         'total': total,
         'placa': placa,
         'tiempo': tiempo
@@ -71,12 +71,7 @@ def salida(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
-
-
-@login_required
-def vehiculos(request):
-    return render(request, 'vehiculos.html')
+    return render(request, 'gestion/dashboard.html')
 
 
 @login_required
@@ -98,7 +93,7 @@ def historial(request):
         .order_by('-total')[:5]
     )
 
-    return render(request, 'historial.html', {
+    return render(request, 'gestion/historial.html', {
         'ingresos': ingresos,
         'salidas': salidas,
         'frecuentes': frecuentes,
@@ -106,30 +101,30 @@ def historial(request):
     })
 
 @login_required
+def reservas(request):
+    return render(request, 'gestion/reservas.html')
+
+
+@login_required
+def gestion_espacios(request):
+    return render(request, 'gestion/espacios.html')
+
+
+@login_required
+def tarifas(request):
+    return render(request, 'gestion/tarifas.html')
+
+
+@login_required
+def usuarios(request):
+    return render(request, 'gestion/usuarios.html')
+
+
+@login_required
 def reportes(request):
-    return render(request, 'reportes.html')
+    return render(request, 'gestion/reportes.html')
 
 
 @login_required
 def configuracion(request):
-    return render(request, 'configuracion.html')
-
-
-@login_required
-def modulo7(request):
-    return render(request, 'modulo7.html')
-
-
-@login_required
-def modulo8(request):
-    return render(request, 'modulo8.html')
-
-
-@login_required
-def modulo9(request):
-    return render(request, 'modulo9.html')
-
-
-@login_required
-def modulo10(request):
-    return render(request, 'modulo10.html')
+    return render(request, 'gestion/configuracion.html')
