@@ -2,63 +2,287 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Historial</title>
+<meta charset="UTF-8">
+<title>Historial</title>
 
-    <style>
+<style>
 
-        body{
-            font-family: Arial;
-            background:#f4f4f4;
-        }
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+background:#f4f6f9;
+}
 
-        table{
-            width:80%;
-            margin:auto;
-            margin-top:50px;
-            border-collapse: collapse;
-            background:white;
-        }
+/* SIDEBAR */
 
-        th, td{
-            padding:12px;
-            border:1px solid #ddd;
-            text-align:center;
-        }
+.sidebar{
+width:260px;
+background:#0d1b2a;
+color:white;
+height:100vh;
+padding-top:20px;
+}
 
-        th{
-            background:#ffc107;
-        }
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+}
 
-    </style>
+.sidebar a{
+display:block;
+color:white;
+padding:15px;
+text-decoration:none;
+}
 
+.sidebar a:hover{
+background:#1b263b;
+}
+
+/* CONTENIDO */
+
+.content{
+flex:1;
+padding:40px;
+}
+
+/* BUSCADOR */
+
+.buscador{
+margin-bottom:30px;
+}
+
+.buscador input{
+padding:10px;
+width:250px;
+}
+
+.buscador button{
+padding:10px 20px;
+background:#1b263b;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.buscador button:hover{
+background:#0d1b2a;
+}
+
+/* FILA INGRESOS / SALIDAS */
+
+.row{
+display:flex;
+gap:40px;
+margin-bottom:40px;
+}
+
+.box{
+flex:1;
+}
+
+/* TABLAS */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#1b263b;
+color:white;
+}
+
+/* SCROLL SOLO PARA FILAS */
+
+.tabla-scroll{
+max-height:300px;
+overflow-y:auto;
+border-radius:6px;
+box-shadow:0px 2px 6px rgba(0,0,0,0.1);
+}
+
+/* CLIENTES FRECUENTES */
+
+.frecuentes{
+width:400px;
+background:white;
+padding:20px;
+border-radius:6px;
+box-shadow:0px 2px 6px rgba(0,0,0,0.1);
+}
+
+h1{
+color:#0d1b2a;
+margin-bottom:10px;
+}
+
+</style>
 </head>
 
 <body>
 
-<h2 style="text-align:center;">Historial de Vehículos</h2>
+<div class="sidebar">
+
+<h2>ParkPlace</h2>
+
+<a href="/dashboard/">Dashboard</a>
+<a href="/registrar/">Ingreso</a>
+<a href="/salida/">Salida</a>
+<a href="/historial/">Historial</a>
+<a href="/reportes/">Reportes</a>
+<a href="/configuracion/">Configuración</a>
+
+</div>
+
+
+<div class="content">
+
+<!-- BUSCADOR -->
+
+<div class="buscador">
+
+<form method="GET">
+
+<input 
+type="text" 
+name="buscar" 
+placeholder="Buscar placa..." 
+value="{{ buscar }}"
+>
+
+<button type="submit">Buscar</button>
+
+<a href="/historial/">Limpiar</a>
+
+</form>
+
+</div>
+
+
+<!-- INGRESOS Y SALIDAS -->
+
+<div class="row">
+
+<div class="box">
+
+<h1>Historial de Ingresos</h1>
+
+<div class="tabla-scroll">
 
 <table>
 
 <tr>
-    <th>Placa</th>
-    <th>Tipo</th>
-    <th>Espacio</th>
-    <th>Hora de ingreso</th>
+<th>Placa</th>
+<th>Tipo</th>
+<th>Espacio</th>
+<th>Hora ingreso</th>
 </tr>
 
 {% for ingreso in ingresos %}
 
 <tr>
-    <td>{{ ingreso.placa }}</td>
-    <td>{{ ingreso.tipo_vehiculo }}</td>
-    <td>{{ ingreso.espacio }}</td>
-    <td>{{ ingreso.hora_ingreso }}</td>
+<td>{{ ingreso.placa }}</td>
+<td>{{ ingreso.tipo_vehiculo }}</td>
+<td>{{ ingreso.espacio }}</td>
+<td>{{ ingreso.hora_ingreso }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="4">No hay ingresos registrados</td>
 </tr>
 
 {% endfor %}
 
 </table>
+
+</div>
+
+</div>
+
+
+<div class="box">
+
+<h1>Historial de Salidas</h1>
+
+<div class="tabla-scroll">
+
+<table>
+
+<tr>
+<th>Placa</th>
+<th>Hora salida</th>
+<th>Tiempo total</th>
+</tr>
+
+{% for salida in salidas %}
+
+<tr>
+<td>{{ salida.ingreso.placa }}</td>
+<td>{{ salida.hora_salida }}</td>
+<td>{{ salida.tiempo_total }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="3">No hay salidas registradas</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CLIENTES FRECUENTES -->
+
+<h1>Clientes más frecuentes</h1>
+
+<div class="frecuentes">
+
+<table>
+
+<tr>
+<th>Placa</th>
+<th>Ingresos</th>
+</tr>
+
+{% for cliente in frecuentes %}
+
+<tr>
+<td>{{ cliente.placa }}</td>
+<td>{{ cliente.total }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="2">Sin datos</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
 
 </body>
 </html>

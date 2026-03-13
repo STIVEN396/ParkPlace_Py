@@ -3,12 +3,14 @@ from django.db import models
 
 class Espacio(models.Model):
     numero = models.IntegerField()
-    tipo_vehiculo = models.CharField(max_length=20)
+    tipo_vehiculo = models.CharField(
+        max_length=20
+    )
     estado = models.CharField(
         max_length=20,
         default='disponible'
     )
-    def _str_(self):
+    def __str__(self):
         return f"Espacio {self.numero}"
 
 
@@ -36,22 +38,33 @@ class Ingreso(models.Model):
 
 
 class Salida(models.Model):
+
     ingreso = models.ForeignKey(
         Ingreso,
         on_delete=models.CASCADE
     )
+
     hora_salida = models.DateTimeField(auto_now_add=True)
-    tiempo_total = models.IntegerField()
+
+    tiempo_total = models.IntegerField(
+        null=True,
+        blank=True
+    )
+
     valor_pagado = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        null=True,
+        blank=True
     )
+
     descuento = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0
     )
-    def _str_(self):
+
+    def __str__(self):
         return f"Salida {self.ingreso.placa}"
 
 

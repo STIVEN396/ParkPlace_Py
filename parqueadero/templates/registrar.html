@@ -1,82 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Registrar Vehículo</title>
+<meta charset="UTF-8">
+<title>Ingreso de Vehículo</title>
 
-    <style>
-        body{
-            font-family: Arial;
-            background:#f4f4f4;
-        }
+<style>
 
-        .container{
-            width:400px;
-            margin:60px auto;
-            background:white;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-        }
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f7fb;
+}
 
-        h2{
-            text-align:center;
-            margin-bottom:20px;
-        }
+/* SIDEBAR */
 
-        input, select{
-            width:100%;
-            padding:10px;
-            margin-bottom:15px;
-            border:1px solid #ccc;
-            border-radius:5px;
-        }
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    height:100vh;
+    background:#0f172a;
+    color:white;
+}
 
-        button{
-            width:100%;
-            padding:12px;
-            background:#ffc107;
-            border:none;
-            border-radius:5px;
-            font-weight:bold;
-            cursor:pointer;
-        }
+.sidebar h2{
+    text-align:center;
+    padding:25px;
+    border-bottom:1px solid #1e293b;
+    font-size:22px;
+}
 
-        button:hover{
-            background:#e0a800;
-        }
+.sidebar a{
+    display:block;
+    color:white;
+    padding:15px 25px;
+    text-decoration:none;
+    font-size:15px;
+}
 
-    </style>
+.sidebar a:hover{
+    background:#1e3a8a;
+}
+
+/* CONTENIDO */
+
+.content{
+    margin-left:260px;
+    padding:40px;
+}
+
+.title{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:30px;
+}
+
+/* FORMULARIO */
+
+.form-container{
+    background:white;
+    width:400px;
+    margin:auto;
+    padding:30px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+label{
+    font-weight:bold;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#1e3a8a;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+</style>
 
 </head>
+
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
 
-    <h2>Registrar Ingreso</h2>
+<div class="sidebar">
 
-    <form method="POST">
+<h2>ParkPlace</h2>
 
-        {% csrf_token %}
+<a href="/dashboard/">Dashboard</a>
+<a href="/registrar/">Ingreso</a>
+<a href="#">Salida</a>
+<a href="/historial/">Historial</a>
+<a href="#">Reservas</a>
+<a href="#">Gestión de espacios</a>
+<a href="#">Tarifas</a>
+<a href="#">Usuarios</a>
+<a href="/reportes/">Reportes</a>
+<a href="/configuracion/">Configuración</a>
 
-        <label>Placa</label>
-        <input type="text" name="placa" required>
+</div>
+
+<!-- CONTENIDO -->
+
+<div class="content">
+
+<div class="title">
+Registrar Ingreso de Vehículo
+</div>
+
+<div class="form-container">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label>Placa</label>
+<input type="text" name="placa" required>
 
 <label>Tipo de vehículo</label>
 <select name="tipo_vehiculo">
-    <option value="Carro">Carro</option>
-    <option value="Moto">Moto</option>
-    <option value="Camioneta">Camioneta</option>
+<option value="Carro">Carro</option>
+<option value="Moto">Moto</option>
+<option value="Camioneta">Camioneta</option>
 </select>
 
-        <label>Color</label>
-        <input type="text" name="color">
+<button type="submit">
+Registrar Vehículo
+</button>
 
-        <button type="submit">
-            Registrar Vehículo
-        </button>
+</form>
 
-    </form>
+</div>
 
 </div>
 
