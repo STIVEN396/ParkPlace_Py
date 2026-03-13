@@ -4,25 +4,27 @@ from parqueadero import views
 
 urlpatterns = [
 
-path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
-path('accounts/', include('django.contrib.auth.urls')),
+    path('registrar/', views.registrar_vehiculo, name='registrar'),
 
-path('dashboard/', views.dashboard, name='dashboard'),
+    path('accounts/', include('django.contrib.auth.urls')),
 
-path('registrar/', views.registrar_vehiculo, name='registrar'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 
-path('vehiculos/', views.vehiculos, name='vehiculos'),
+    path('registrar/', views.vehiculos, name='registrar'),
 
-path('historial/', views.historial, name='historial'),
+    path('vehiculos/', views.vehiculos, name='vehiculos'),
 
-path('reportes/', views.reportes, name='reportes'),
+    path('historial/', views.historial, name='historial'),
 
-path('configuracion/', views.configuracion, name='configuracion'),
+    path('reportes/', views.reportes, name='reportes'),
 
-path('mod7/', views.modulo7, name='mod7'),
-path('mod8/', views.modulo8, name='mod8'),
-path('mod9/', views.modulo9, name='mod9'),
-path('mod10/', views.modulo10, name='mod10'),
+    path('configuracion/', views.configuracion, name='configuracion'),
+
+    path('mod7/', views.modulo7, name='mod7'),
+    path('mod8/', views.modulo8, name='mod8'),
+    path('mod9/', views.modulo9, name='mod9'),
+    path('mod10/', views.modulo10, name='mod10'),
 
 ]

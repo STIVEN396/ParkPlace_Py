@@ -1,9 +1,104 @@
 from django.db import models
 
-class Vehiculo(models.Model):
-    placa = models.CharField(max_length=10)
-    tipo = models.CharField(max_length=20)
-    hora_ingreso = models.DateTimeField(auto_now_add=True)
 
+class Espacio(models.Model):
+    numero = models.IntegerField()
+    tipo_vehiculo = models.CharField(max_length=20)
+    estado = models.CharField(
+        max_length=20,
+        default='disponible'
+    )
+    def _str_(self):
+        return f"Espacio {self.numero}"
+
+
+class Tarifa(models.Model):
+    tipo_vehiculo = models.CharField(max_length=20)
+    precio_hora = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
     def __str__(self):
+        return f"{self.tipo_vehiculo} - {self.precio_hora}"
+
+
+class Ingreso(models.Model):
+    placa = models.CharField(max_length=10)
+    tipo_vehiculo = models.CharField(max_length=20)
+    espacio = models.ForeignKey(
+        Espacio,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    hora_ingreso = models.DateTimeField(auto_now_add=True)
+    def _str_(self):
         return self.placa
+
+
+class Salida(models.Model):
+    ingreso = models.ForeignKey(
+        Ingreso,
+        on_delete=models.CASCADE
+    )
+    hora_salida = models.DateTimeField(auto_now_add=True)
+    tiempo_total = models.IntegerField()
+    valor_pagado = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+    descuento = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    def _str_(self):
+        return f"Salida {self.ingreso.placa}"
+
+
+class Reserva(models.Model):
+    nombre = models.CharField(max_length=100)
+    cedula = models.CharField(max_length=20)
+    placa = models.CharField(max_length=10)
+    tipo_vehiculo = models.CharField(max_length=20)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    estado = models.CharField(
+        max_length=20,
+        default='activa'
+    )
+    def _str_(self):
+        return self.placa
+
+
+class Usuario(models.Model):
+    nombre = models.CharField(max_length=100)
+    cedula = models.CharField(max_length=20)
+    telefono = models.CharField(max_length=20)
+    username = models.CharField(
+        max_length=50,
+        unique=True
+    )
+    password = models.CharField(max_length=255)
+    rol = models.CharField(
+        max_length=20,
+        choices=[
+            ('admin', 'Administrador'),
+            ('empleado', 'Empleado')
+        ]
+    )
+    activo = models.BooleanField(default=True)
+    def _str_(self):
+        return self.nombre
+
+
+class Configuracion(models.Model):
+    capacidad_total = models.IntegerField()
+    alerta_parqueadero_lleno = models.BooleanField(
+        default=True
+    )
+    alerta_reserva_expirada = models.BooleanField(
+        default=True
+    )
+    tiempo_maximo_horas = models.IntegerField()
+    def _str_(self):
+        return "Configuración"

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Historial</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f4f4f4;
+        }
+
+        table{
+            width:80%;
+            margin:auto;
+            margin-top:50px;
+            border-collapse: collapse;
+            background:white;
+        }
+
+        th, td{
+            padding:12px;
+            border:1px solid #ddd;
+            text-align:center;
+        }
+
+        th{
+            background:#ffc107;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Historial de Vehículos</h2>
+
+<table>
+
+<tr>
+    <th>Placa</th>
+    <th>Tipo</th>
+    <th>Espacio</th>
+    <th>Hora de ingreso</th>
+</tr>
+
+{% for ingreso in ingresos %}
+
+<tr>
+    <td>{{ ingreso.placa }}</td>
+    <td>{{ ingreso.tipo_vehiculo }}</td>
+    <td>{{ ingreso.espacio }}</td>
+    <td>{{ ingreso.hora_ingreso }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

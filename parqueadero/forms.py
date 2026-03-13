@@ -1,7 +1,8 @@
 from django import forms
-from .models import Vehiculo
+from .models import Espacio
 
-class VehiculoForm(forms.ModelForm):
+class EspacioForm(forms.ModelForm):
+
     class Meta:
-        model = Vehiculo
-        fields = ['placa','tipo']
+        model = Espacio
+        fields = '_all_'
