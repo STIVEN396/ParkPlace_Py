@@ -31,8 +31,6 @@ def vehiculos(request):
     return render(request, 'vehiculos.html')
 
 
-from .models import Ingreso
-
 @login_required
 def historial(request):
 
