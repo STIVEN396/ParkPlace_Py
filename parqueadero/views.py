@@ -7,36 +7,45 @@ from django.contrib.auth.hashers import check_password
 
 from parqueadero.service.clienteServicio import ClienteServicio
 from .models import Ingreso, Salida, Tarifa, Espacio, Usuario
+from .models import Espacio
 
 
 @login_required
 def registrar_vehiculo(request):
-
     if request.method == 'POST':
-
         placa = request.POST.get('placa')
         tipo_vehiculo = request.POST.get('tipo_vehiculo')
 
-        # Verificar si el vehículo ya está dentro
-        ingreso_abierto = Ingreso.objects.filter(
-            placa=placa,
-            salida__isnull=True
-        ).first()
-
+        ingreso_abierto = Ingreso.objects.filter(placa=placa, salida__isnull=True).first()
         if ingreso_abierto:
             messages.error(request, f"El vehículo {placa} ya está dentro del parqueadero")
             return redirect('registrar')
 
-        Ingreso.objects.create(
+        ingreso = Ingreso.objects.create(
             placa=placa,
-            tipo_vehiculo=tipo_vehiculo,
-            hora_ingreso=timezone.now()
+            tipo_vehiculo=tipo_vehiculo
         )
 
-        messages.success(request, f"Vehículo {placa} registrado correctamente")
+        # Asignar espacio disponible
+        espacio_disponible = Espacio.objects.filter(
+            tipo_vehiculo__iexact=tipo_vehiculo,  # ignora mayúsculas/minúsculas
+            estado='disponible'
+        ).first()
+
+        if espacio_disponible:
+            ingreso.espacio = espacio_disponible
+            ingreso.save()
+            espacio_disponible.estado = 'ocupado'
+            espacio_disponible.save()
+            messages.success(request, f"Vehículo {placa} asignado al espacio {espacio_disponible.numero}")
+        else:
+            messages.error(request, f"No hay espacios disponibles para vehículos tipo {tipo_vehiculo}")
+            ingreso.delete()
+
         return redirect('registrar')
 
     return render(request, 'gestion/registrar.html')
+
 
 
 @login_required
@@ -47,56 +56,39 @@ def salida(request):
     tiempo = None
 
     if request.method == 'POST':
-
         placa = request.POST.get('placa')
 
-        # buscar ingreso que aún esté dentro
+        # Buscar ingreso que aún esté dentro
         ingreso = Ingreso.objects.filter(
             placa=placa,
             salida__isnull=True
         ).order_by('-hora_ingreso').first()
 
-        # si no hay ingreso abierto
         if not ingreso:
-
             salida_registrada = Salida.objects.filter(
                 ingreso__placa=placa
             ).order_by('-hora_salida').first()
 
             if salida_registrada:
-
                 hora = salida_registrada.hora_salida.strftime("%H:%M")
-
-                messages.error(
-                    request,
-                    f"El vehículo {placa} ya salió a las {hora}"
-                )
-
+                messages.error(request, f"El vehículo {placa} ya salió a las {hora}")
             else:
-                messages.error(
-                    request,
-                    "Ese vehículo no tiene registro de ingreso"
-                )
-
+                messages.error(request, "Ese vehículo no tiene registro de ingreso")
             return redirect('salida')
 
         hora_salida = timezone.now()
-
         diferencia = hora_salida - ingreso.hora_ingreso
         segundos = diferencia.total_seconds()
 
         horas = int(segundos // 3600)
         minutos = int((segundos % 3600) // 60)
-
         tiempo = f"{horas}h {minutos}m"
 
-        tarifa = Tarifa.objects.get(
-            tipo_vehiculo=ingreso.tipo_vehiculo
-        )
-
+        tarifa = Tarifa.objects.get(tipo_vehiculo=ingreso.tipo_vehiculo)
         horas_decimal = segundos / 3600
         total = round(horas_decimal * float(tarifa.precio_hora), 2)
 
+        # Registrar salida
         Salida.objects.create(
             ingreso=ingreso,
             tiempo_total=horas_decimal,
@@ -104,11 +96,19 @@ def salida(request):
             hora_salida=hora_salida
         )
 
+        # 🔹 Liberar espacio
+        if ingreso.espacio:
+            ingreso.espacio.estado = 'disponible'
+            ingreso.espacio.save()
+
+        messages.success(request, f"Vehículo {placa} salió correctamente. Total a pagar: ${total}")
+
     return render(request, 'gestion/salida.html', {
         'total': total,
         'placa': placa,
         'tiempo': tiempo
     })
+
 
 
 @login_required
@@ -125,13 +125,21 @@ def historial(request):
 
 
 @login_required
-def reservas(request):
-    return render(request, 'gestion/reservas.html')
 
+def reservas(request):
+     return render(request, 'gestion/reservas.html')
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Espacio
 
 @login_required
 def gestion_espacios(request):
-    return render(request, 'gestion/espacios.html')
+    # Trae todos los espacios ordenados
+    espacios = Espacio.objects.all().order_by('numero')
+    return render(request, 'gestion/espacios.html', {'espacios': espacios})
+
 
 
 @login_required

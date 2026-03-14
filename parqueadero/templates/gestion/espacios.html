@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Espacios{% endblock %}
+
+{% block extra_css %}
+<style>
+.espacios-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+.espacio-card {
+    height: 100px; /* más pequeño */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.3s, background 0.5s;
+    padding: 8px;
+    text-align: center;
+    position: relative;
+}
+
+/* Hover */
+.espacio-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+/* Colores suaves con gradiente */
+.disponible { background: linear-gradient(135deg, rgba(34,197,94,0.6), rgba(34,197,94,0.8)); }
+.ocupado { background: linear-gradient(135deg, rgba(239,68,68,0.6), rgba(239,68,68,0.8)); }
+.reservado { background: linear-gradient(135deg, rgba(245,158,11,0.6), rgba(245,158,11,0.8)); }
+
+.espacio-numero { font-size: 16px; margin-bottom: 2px; }
+.placa, .hora-ingreso { font-size: 12px; margin: 1px 0; text-shadow: 0 0 2px rgba(0,0,0,0.6); }
+
+/* Barra de tiempo dentro de ocupados */
+.tiempo-bar {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.3);
+}
+.tiempo-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.8);
+    width: 0%;
+    transition: width 0.5s;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Gestión de Espacios</h1>
+
+<div class="espacios-grid">
+    {% for espacio in espacios %}
+    <div class="espacio-card {% if espacio.estado == 'disponible' %}disponible{% elif espacio.estado == 'ocupado' %}ocupado{% elif espacio.estado == 'reservado' %}reservado{% endif %}">
+        <div class="espacio-numero">Espacio {{ espacio.numero }}</div>
+
+        {% if espacio.estado == 'ocupado' %}
+            {% with ingreso=espacio.ingreso_set.last %}
+                {% if ingreso %}
+                    <div class="placa">{{ ingreso.placa }}</div>
+                    <div class="hora-ingreso">{{ ingreso.hora_ingreso|date:"H:i" }}</div>
+                    <div class="tiempo-bar">
+                    </div>
+                {% else %}
+                    <div class="placa">Sin placa</div>
+                {% endif %}
+            {% endwith %}
+        {% elif espacio.estado == 'reservado' %}
+            <div class="placa">Reservado </div>
+        {% else %}
+            <div class="placa">Disponible </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

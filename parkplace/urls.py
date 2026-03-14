@@ -18,7 +18,7 @@ urlpatterns = [
 
     path('reservas/', views.dashboard, name='reservas'),
 
-    path('espacios/', views.dashboard, name='espacios'),
+    path('espacios/', views.gestion_espacios, name='espacios'),
 
     path('tarifas/', views.dashboard, name='tarifas'),
 
