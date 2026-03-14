@@ -1,108 +1,107 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-<meta charset="UTF-8">
-<title>Salida</title>
+{% block title %}
+Salida de Vehículo
+{% endblock %}
+
+{% block extra_css %}
 
 <style>
 
-body{
-margin:0;
-font-family:Arial;
-display:flex;
-background:#f4f6f9;
+.title{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:30px;
 }
 
-.sidebar{
-width:260px;
-background:#0d1b2a;
-color:white;
-height:100vh;
-padding-top:20px;
+.form-container{
+    background:white;
+    padding:30px;
+    width:400px;
+    margin:auto;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
-.sidebar h2{
-text-align:center;
-margin-bottom:30px;
-}
-
-.sidebar a{
-display:block;
-color:white;
-padding:15px;
-text-decoration:none;
-}
-
-.sidebar a:hover{
-background:#1b263b;
-}
-
-.content{
-flex:1;
-padding:40px;
-}
-
-form{
-background:white;
-padding:30px;
-width:350px;
-border-radius:8px;
-box-shadow:0px 2px 8px rgba(0,0,0,0.1);
-}
-
-input,button{
-width:100%;
-padding:12px;
-margin-top:10px;
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:5px;
 }
 
 button{
-background:#1b263b;
-color:white;
-border:none;
-cursor:pointer;
+    width:100%;
+    padding:12px;
+    background:#1e3a8a;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-size:16px;
+    cursor:pointer;
 }
 
 button:hover{
-background:#0d1b2a;
+    background:#1e40af;
 }
 
 .resultado{
-margin-top:30px;
-background:white;
-padding:20px;
-width:350px;
-border-radius:8px;
-box-shadow:0px 2px 8px rgba(0,0,0,0.1);
+    margin:30px auto;
+    background:white;
+    padding:25px;
+    width:400px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
-h1{
-color:#0d1b2a;
+.resultado h2{
+    margin-top:0;
+}
+
+.resultado p{
+    font-size:16px;
+    margin:8px 0;
+}
+
+/* MENSAJES */
+
+.mensaje{
+    width:400px;
+    margin:0 auto 20px auto;
+    padding:12px;
+    border-radius:6px;
+    font-weight:500;
+}
+
+.mensaje-error{
+    background:#fee2e2;
+    color:#991b1b;
+    border-left:5px solid #dc2626;
 }
 
 </style>
-</head>
 
-<body>
+{% endblock %}
 
-<div class="sidebar">
+{% block content %}
 
-<h2>ParkPlace</h2>
-
-<a href="/dashboard/">Dashboard</a>
-<a href="/registrar/">Ingreso</a>
-<a href="/salida/">Salida</a>
-<a href="/historial/">Historial</a>
-<a href="/reportes/">Reportes</a>
-<a href="/configuracion/">Configuración</a>
-
+<div class="title">
+Registrar salida de vehículo
 </div>
 
+<!-- MENSAJES -->
 
-<div class="content">
+{% if messages %}
+    {% for message in messages %}
+        <div class="mensaje mensaje-error">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
-<h1>Registrar salida de vehículo</h1>
+<div class="form-container">
 
 <form method="POST">
 
@@ -110,10 +109,13 @@ color:#0d1b2a;
 
 <input type="text" name="placa" placeholder="Placa del vehículo" required>
 
-<button type="submit">Registrar salida</button>
+<button type="submit">
+Registrar salida
+</button>
 
 </form>
 
+</div>
 
 {% if total %}
 
@@ -123,7 +125,7 @@ color:#0d1b2a;
 
 <p><b>Placa:</b> {{ placa }}</p>
 
-<p><b>Tiempo estacionado:</b> {{ tiempo }} horas</p>
+<p><b>Tiempo estacionado:</b> {{ tiempo }}</p>
 
 <p><b>Valor a pagar:</b> $ {{ total }}</p>
 
@@ -131,7 +133,4 @@ color:#0d1b2a;
 
 {% endif %}
 
-</div>
-
-</body>
-</html>
+{% endblock %}

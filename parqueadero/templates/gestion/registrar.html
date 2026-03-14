@@ -1,63 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-<meta charset="UTF-8">
-<title>Ingreso de Vehículo</title>
+{% block title %}
+Ingreso de Vehículo
+{% endblock %}
+
+{% block extra_css %}
 
 <style>
-
-body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f5f7fb;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:260px;
-    height:100vh;
-    background:#0f172a;
-    color:white;
-}
-
-.sidebar h2{
-    text-align:center;
-    padding:25px;
-    border-bottom:1px solid #1e293b;
-    font-size:22px;
-}
-
-.sidebar a{
-    display:block;
-    color:white;
-    padding:15px 25px;
-    text-decoration:none;
-    font-size:15px;
-}
-
-.sidebar a:hover{
-    background:#1e3a8a;
-}
-
-/* CONTENIDO */
-
-.content{
-    margin-left:260px;
-    padding:40px;
-}
 
 .title{
     text-align:center;
     font-size:28px;
     margin-bottom:30px;
 }
-
-/* FORMULARIO */
 
 .form-container{
     background:white;
@@ -96,40 +51,53 @@ button:hover{
     background:#1e40af;
 }
 
+/* MENSAJES */
+
+.mensaje{
+    padding:12px;
+    border-radius:6px;
+    margin-bottom:20px;
+    font-weight:500;
+}
+
+.mensaje-error{
+    background:#fee2e2;
+    color:#991b1b;
+    border-left:5px solid #dc2626;
+}
+
+.mensaje-exito{
+    background:#dcfce7;
+    color:#166534;
+    border-left:5px solid #22c55e;
+}
+
 </style>
 
-</head>
+{% endblock %}
 
-<body>
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<h2>ParkPlace</h2>
-
-<a href="/dashboard/">Dashboard</a>
-<a href="/registrar/">Ingreso</a>
-<a href="#">Salida</a>
-<a href="/historial/">Historial</a>
-<a href="#">Reservas</a>
-<a href="#">Gestión de espacios</a>
-<a href="#">Tarifas</a>
-<a href="#">Usuarios</a>
-<a href="/reportes/">Reportes</a>
-<a href="/configuracion/">Configuración</a>
-
-</div>
-
-<!-- CONTENIDO -->
-
-<div class="content">
+{% block content %}
 
 <div class="title">
 Registrar Ingreso de Vehículo
 </div>
 
 <div class="form-container">
+
+<!-- MENSAJES DEL SISTEMA -->
+
+{% if messages %}
+    {% for message in messages %}
+
+        <div class="mensaje 
+        {% if message.tags == 'error' %}mensaje-error{% endif %}
+        {% if message.tags == 'success' %}mensaje-exito{% endif %}
+        ">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+{% endif %}
 
 <form method="POST">
 
@@ -139,6 +107,7 @@ Registrar Ingreso de Vehículo
 <input type="text" name="placa" required>
 
 <label>Tipo de vehículo</label>
+
 <select name="tipo_vehiculo">
 <option value="Carro">Carro</option>
 <option value="Moto">Moto</option>
@@ -153,7 +122,4 @@ Registrar Vehículo
 
 </div>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

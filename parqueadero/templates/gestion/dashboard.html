@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard - ParkPlace
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.title{
+    font-size:28px;
+    margin-bottom:30px;
+}
+
+/* KPIs */
+
+.kpis{
+    display:flex;
+    gap:30px;
+    margin-bottom:40px;
+}
+
+.kpi{
+    flex:1;
+    background:white;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+.kpi h3{
+    margin:0;
+    font-size:18px;
+    color:#555;
+}
+
+.kpi p{
+    font-size:28px;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+/* GRID */
+
+.grid{
+    display:flex;
+    gap:40px;
+}
+
+.box{
+    flex:1;
+    background:white;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+    text-align:center;
+}
+
+th{
+    background:#1e3a8a;
+    color:white;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="title">
+Dashboard
+</div>
+
+<div class="kpis">
+
+<div class="kpi">
+<h3>Vehículos dentro</h3>
+<p>{{ dentro }}</p>
+</div>
+
+<div class="kpi">
+<h3>Ingresos hoy</h3>
+<p>{{ ingresos_hoy }}</p>
+</div>
+
+<div class="kpi">
+<h3>Espacios disponibles</h3>
+<p>{{ espacios }}</p>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="box">
+
+<h3>Últimos ingresos</h3>
+
+<table>
+
+<tr>
+<th>Placa</th>
+<th>Tipo</th>
+<th>Hora</th>
+</tr>
+
+{% for ingreso in ingresos %}
+
+<tr>
+<td>{{ ingreso.placa }}</td>
+<td>{{ ingreso.tipo_vehiculo }}</td>
+<td>{{ ingreso.hora_ingreso }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="3">Sin registros</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="box">
+
+<h3>Últimas salidas</h3>
+
+<table>
+
+<tr>
+<th>Placa</th>
+<th>Hora salida</th>
+</tr>
+
+{% for salida in salidas %}
+
+<tr>
+<td>{{ salida.ingreso.placa }}</td>
+<td>{{ salida.hora_salida }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="2">Sin registros</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

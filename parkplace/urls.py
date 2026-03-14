@@ -4,6 +4,8 @@ from parqueadero import views
 
 urlpatterns = [
 
+    path('', views.login, name='login'),
+    
     path('admin/', admin.site.urls),
 
     path('dashboard/', views.dashboard, name='dashboard'),
@@ -27,5 +29,7 @@ urlpatterns = [
     path('configuracion/', views.configuracion, name='configuracion'),
 
     path('accounts/', include('django.contrib.auth.urls')),
+
+    
 
 ]

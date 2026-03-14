@@ -1,85 +1,82 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-<meta charset="UTF-8">
-<title>Historial</title>
+{% block title %}
+Historial - ParkPlace
+{% endblock %}
+
+{% block extra_css %}
 
 <style>
 
-body{
-margin:0;
-font-family:Arial;
-display:flex;
-background:#f4f6f9;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-width:260px;
-background:#0d1b2a;
-color:white;
-height:100vh;
-padding-top:20px;
-}
-
-.sidebar h2{
-text-align:center;
-margin-bottom:30px;
-}
-
-.sidebar a{
-display:block;
-color:white;
-padding:15px;
-text-decoration:none;
-}
-
-.sidebar a:hover{
-background:#1b263b;
-}
-
-/* CONTENIDO */
-
-.content{
-flex:1;
-padding:40px;
-}
-
 /* BUSCADOR */
 
-.buscador{
+.buscador-container{
+display:flex;
+align-items:center;
+gap:20px;
 margin-bottom:30px;
 }
 
 .buscador input{
 padding:10px;
-width:250px;
+width:220px;
+border:1px solid #ccc;
+border-radius:5px;
 }
 
 .buscador button{
 padding:10px 20px;
-background:#1b263b;
+background:#1e3a8a;
 color:white;
 border:none;
+border-radius:5px;
 cursor:pointer;
 }
 
-.buscador button:hover{
-background:#0d1b2a;
+.resultado-mini{
+background:white;
+padding:10px 15px;
+border-radius:6px;
+box-shadow:0 3px 10px rgba(0,0,0,0.08);
+font-size:14px;
+border-left:4px solid #1900ff;
+min-width:300px;
 }
 
-/* FILA INGRESOS / SALIDAS */
+.texto-resultado{
+color:#888;
+font-style:italic;
+}
 
-.row{
+/* LAYOUT PRINCIPAL */
+
+.layout{
 display:flex;
 gap:40px;
-margin-bottom:40px;
 }
 
-.box{
+/* INGRESOS GRANDE */
+
+.ingresos{
+flex:2;
+}
+
+/* COLUMNA DERECHA */
+
+.columna-derecha{
 flex:1;
+display:flex;
+flex-direction:column;
+gap:40px;
+}
+
+/* CAJAS */
+
+.box{
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
 /* TABLAS */
@@ -87,77 +84,50 @@ flex:1;
 table{
 width:100%;
 border-collapse:collapse;
-background:white;
 }
 
 th,td{
 padding:12px;
-border:1px solid #ddd;
+border:1px solid #eee;
 text-align:center;
 }
 
 th{
-background:#1b263b;
+background:#1e3a8a;
 color:white;
 }
 
-/* SCROLL SOLO PARA FILAS */
+/* SCROLL HISTORIAL INGRESOS (≈10 filas) */
 
-.tabla-scroll{
-max-height:300px;
+.scroll-ingresos{
+max-height:450px;
 overflow-y:auto;
-border-radius:6px;
-box-shadow:0px 2px 6px rgba(0,0,0,0.1);
 }
 
-/* CLIENTES FRECUENTES */
+/* SCROLL TABLAS PEQUEÑAS (≈5 filas) */
 
-.frecuentes{
-width:400px;
-background:white;
-padding:20px;
-border-radius:6px;
-box-shadow:0px 2px 6px rgba(0,0,0,0.1);
-}
-
-h1{
-color:#0d1b2a;
-margin-bottom:10px;
+.scroll-pequeno{
+max-height:230px;
+overflow-y:auto;
 }
 
 </style>
-</head>
 
-<body>
+{% endblock %}
 
-<div class="sidebar">
+{% block content %}
 
-<h2>ParkPlace</h2>
+<h1>Historial del Parqueadero</h1>
 
-<a href="/dashboard/">Dashboard</a>
-<a href="/registrar/">Ingreso</a>
-<a href="/salida/">Salida</a>
-<a href="/historial/">Historial</a>
-<a href="/reportes/">Reportes</a>
-<a href="/configuracion/">Configuración</a>
+<!-- BUSCADOR + RESULTADO -->
 
-</div>
-
-
-<div class="content">
-
-<!-- BUSCADOR -->
+<div class="buscador-container">
 
 <div class="buscador">
 
 <form method="GET">
 
-<input 
-type="text" 
-name="buscar" 
-placeholder="Buscar placa..." 
-value="{{ buscar }}"
->
+<input type="text" name="buscar" placeholder="Buscar placa..." value="{{ buscar }}">
 
 <button type="submit">Buscar</button>
 
@@ -167,16 +137,39 @@ value="{{ buscar }}"
 
 </div>
 
+<div class="resultado-mini">
 
-<!-- INGRESOS Y SALIDAS -->
+{% if resultados %}
 
-<div class="row">
+{% for ingreso in resultados.ingresos|slice:":1" %}
+<b>{{ ingreso.placa }}</b> | {{ ingreso.tipo_vehiculo }} | {{ ingreso.hora_ingreso }} | Dentro
+{% endfor %}
 
-<div class="box">
+{% for salida in resultados.salidas|slice:":1" %}
+<b>{{ salida.ingreso.placa }}</b> | {{ salida.ingreso.tipo_vehiculo }} | {{ salida.hora_salida }} | Salió
+{% endfor %}
 
-<h1>Historial de Ingresos</h1>
+{% else %}
 
-<div class="tabla-scroll">
+<span class="texto-resultado">Resultado</span>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- LAYOUT PRINCIPAL -->
+
+<div class="layout">
+
+<!-- HISTORIAL INGRESOS -->
+
+<div class="box ingresos">
+
+<h2>Historial de Ingresos</h2>
+
+<div class="scroll-ingresos">
 
 <table>
 
@@ -199,7 +192,7 @@ value="{{ buscar }}"
 {% empty %}
 
 <tr>
-<td colspan="4">No hay ingresos registrados</td>
+<td colspan="4">No hay ingresos</td>
 </tr>
 
 {% endfor %}
@@ -210,12 +203,17 @@ value="{{ buscar }}"
 
 </div>
 
+<!-- COLUMNA DERECHA -->
+
+<div class="columna-derecha">
+
+<!-- HISTORIAL SALIDAS -->
 
 <div class="box">
 
-<h1>Historial de Salidas</h1>
+<h2>Historial de Salidas</h2>
 
-<div class="tabla-scroll">
+<div class="scroll-pequeno">
 
 <table>
 
@@ -236,7 +234,7 @@ value="{{ buscar }}"
 {% empty %}
 
 <tr>
-<td colspan="3">No hay salidas registradas</td>
+<td colspan="3">No hay salidas</td>
 </tr>
 
 {% endfor %}
@@ -247,14 +245,13 @@ value="{{ buscar }}"
 
 </div>
 
-</div>
-
-
 <!-- CLIENTES FRECUENTES -->
 
-<h1>Clientes más frecuentes</h1>
+<div class="box">
 
-<div class="frecuentes">
+<h2>Clientes más frecuentes</h2>
+
+<div class="scroll-pequeno">
 
 <table>
 
@@ -284,5 +281,8 @@ value="{{ buscar }}"
 
 </div>
 
-</body>
-</html>
+</div>
+
+</div>
+
+{% endblock %}

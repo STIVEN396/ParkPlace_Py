@@ -3,14 +3,14 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Parqueadero</title>
+<title>{% block title %}ParkPlace{% endblock %}</title>
 
 <style>
 
 body{
     margin:0;
-    font-family: Arial;
-    background:#f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f7fb;
 }
 
 /* SIDEBAR */
@@ -19,61 +19,50 @@ body{
     position:fixed;
     left:0;
     top:0;
-    width:220px;
+    width:260px;
     height:100vh;
-    background:#1f2937;
+    background:#0f172a;
     color:white;
 }
 
 .sidebar h2{
     text-align:center;
-    padding:20px;
-    border-bottom:1px solid #444;
+    padding:25px;
+    border-bottom:1px solid #1e293b;
+    font-size:22px;
 }
 
 .sidebar a{
     display:block;
     color:white;
-    padding:12px 20px;
+    padding:15px 25px;
     text-decoration:none;
+    font-size:16px;
 }
 
 .sidebar a:hover{
-    background:#374151;
+    background:#1e3a8a;
 }
 
 /* CONTENIDO */
 
 .content{
-    margin-left:220px;
-    padding:30px;
+    margin-left:260px;
+    padding:40px;
 }
 
-h2{
-    text-align:center;
-}
+/* TARJETAS */
 
-/* TABLA */
-
-table{
-    width:90%;
-    margin:auto;
-    margin-top:30px;
-    border-collapse: collapse;
+.card{
     background:white;
-}
-
-th, td{
-    padding:12px;
-    border:1px solid #ddd;
-    text-align:center;
-}
-
-th{
-    background:#ffc107;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
 </style>
+
+{% block extra_css %}{% endblock %}
 
 </head>
 
@@ -87,12 +76,12 @@ th{
 
 <a href="/dashboard/">Dashboard</a>
 <a href="/registrar/">Ingreso</a>
-<a href="#">Salida</a>
+<a href="/salida/">Salida</a>
 <a href="/historial/">Historial</a>
-<a href="#">Reservas</a>
-<a href="#">Gestión de espacios</a>
-<a href="#">Tarifas</a>
-<a href="#">Usuarios</a>
+<a href="/reservas/">Reservas</a>
+<a href="/espacios/">Gestión de espacios</a>
+<a href="/tarifas/">Tarifas</a>
+<a href="/usuarios/">Usuarios</a>
 <a href="/reportes/">Reportes</a>
 <a href="/configuracion/">Configuración</a>
 
@@ -102,29 +91,8 @@ th{
 
 <div class="content">
 
-<h2>Historial de Vehículos</h2>
-
-<table>
-
-<tr>
-    <th>Placa</th>
-    <th>Tipo</th>
-    <th>Espacio</th>
-    <th>Hora de ingreso</th>
-</tr>
-
-{% for ingreso in ingresos %}
-
-<tr>
-    <td>{{ ingreso.placa }}</td>
-    <td>{{ ingreso.tipo_vehiculo }}</td>
-    <td>{{ ingreso.espacio }}</td>
-    <td>{{ ingreso.hora_ingreso|date:"d/m/Y H:i" }}</td>
-</tr>
-
-{% endfor %}
-
-</table>
+{% block content %}
+{% endblock %}
 
 </div>
 
