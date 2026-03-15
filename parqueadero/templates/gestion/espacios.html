@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Gestión de Espacios{% endblock %}
+{% block title %}Gestión de Espacios - ParkPlace{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -11,7 +11,7 @@
     margin-top: 20px;
 }
 .espacio-card {
-    height: 100px; /* más pequeño */
+    height: 100px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -21,70 +21,62 @@
     color: #fff;
     font-size: 14px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.3s, background 0.5s;
+    transition: transform 0.2s, box-shadow 0.3s;
     padding: 8px;
     text-align: center;
     position: relative;
 }
 
-/* Hover */
 .espacio-card:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 18px rgba(0,0,0,0.2);
     cursor: pointer;
 }
 
-/* Colores suaves con gradiente */
-.disponible { background: linear-gradient(135deg, rgba(34,197,94,0.6), rgba(34,197,94,0.8)); }
-.ocupado { background: linear-gradient(135deg, rgba(239,68,68,0.6), rgba(239,68,68,0.8)); }
-.reservado { background: linear-gradient(135deg, rgba(245,158,11,0.6), rgba(245,158,11,0.8)); }
+/* Colores con !important para asegurar que el cambio de estado visual domine */
+.disponible { background: linear-gradient(135deg, #22c55e, #16a34a) !important; }
+.ocupado { background: linear-gradient(135deg, #ef4444, #dc2626) !important; }
+.reservado { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
 
 .espacio-numero { font-size: 16px; margin-bottom: 2px; }
-.placa, .hora-ingreso { font-size: 12px; margin: 1px 0; text-shadow: 0 0 2px rgba(0,0,0,0.6); }
-
-/* Barra de tiempo dentro de ocupados */
-.tiempo-bar {
-    position: absolute;
-    bottom: 4px;
-    left: 4px;
-    right: 4px;
-    height: 6px;
-    border-radius: 3px;
-    background-color: rgba(255,255,255,0.3);
-}
-.tiempo-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background-color: rgba(255,255,255,0.8);
-    width: 0%;
-    transition: width 0.5s;
-}
+.placa-box { font-size: 12px; margin: 1px 0; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); }
+.sub-texto { font-size: 10px; opacity: 0.9; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>Gestión de Espacios</h1>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+        <h1 style="color: #1e293b; font-weight: 700; margin: 0;">Gestión de Espacios</h1>
+        <p style="color: #64748b; margin: 5px 0 0 0; font-size: 0.9rem;">Estado en tiempo real del parqueadero</p>
+    </div>
+    <div style="display: flex; gap: 15px; font-size: 13px; font-weight: 600;">
+        <span><span style="color: #22c55e;">●</span> Libre</span>
+        <span><span style="color: #f59e0b;">●</span> Reservado</span>
+        <span><span style="color: #ef4444;">●</span> Ocupado</span>
+    </div>
+</div>
 
 <div class="espacios-grid">
-    {% for espacio in espacios %}
-    <div class="espacio-card {% if espacio.estado == 'disponible' %}disponible{% elif espacio.estado == 'ocupado' %}ocupado{% elif espacio.estado == 'reservado' %}reservado{% endif %}">
-        <div class="espacio-numero">Espacio {{ espacio.numero }}</div>
+    {% for e in espacios %}
+    <div class="espacio-card {{ e.estado_visual }}">
+        
+        <div class="espacio-numero"># {{ e.numero }}</div>
 
-        {% if espacio.estado == 'ocupado' %}
-            {% with ingreso=espacio.ingreso_set.last %}
-                {% if ingreso %}
-                    <div class="placa">{{ ingreso.placa }}</div>
-                    <div class="hora-ingreso">{{ ingreso.hora_ingreso|date:"H:i" }}</div>
-                    <div class="tiempo-bar">
-                    </div>
-                {% else %}
-                    <div class="placa">Sin placa</div>
-                {% endif %}
+        {% if e.estado_visual == 'ocupado' %}
+            {% with ingreso=e.ingreso_set.last %}
+                <div class="placa-box">{% if ingreso %}{{ ingreso.placa|upper }}{% else %}EN USO{% endif %}</div>
+                <div class="sub-texto">Ocupado</div>
             {% endwith %}
-        {% elif espacio.estado == 'reservado' %}
-            <div class="placa">Reservado </div>
+            
+        {% elif e.estado_visual == 'reservado' %}
+            {# Ahora mostramos la placa que le asignamos en el view #}
+            <div class="placa-box">{{ e.placa_reserva|default:"WEB"|upper }}</div>
+            <div class="sub-texto">Separado</div>
+            
         {% else %}
-            <div class="placa">Disponible </div>
+            <div class="placa-box">LIBRE</div>
+            <div class="sub-texto">Disponible</div>
         {% endif %}
     </div>
     {% endfor %}
